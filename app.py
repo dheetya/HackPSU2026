@@ -175,14 +175,6 @@ with st.sidebar:
         accept_multiple_files=True,
     )
     st.divider()
-    st.subheader("API")
-    if _api_configured():
-        st.success("LLM API key detected.")
-    else:
-        st.warning(
-            "Set `OPENAI_API_KEY` or `XAI_API_KEY` / `GROK_API_KEY` in your environment. "
-            "Optional: `SILOSIFTER_LLM_PROVIDER=openai|grok`, `SILOSIFTER_MODEL`."
-        )
     run_btn = st.button("Run SiloSifter pipeline", type="primary", disabled=not uploaded_files)
 
 if "matrix" not in st.session_state:
