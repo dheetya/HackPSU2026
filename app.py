@@ -23,6 +23,14 @@ st.set_page_config(
 # --- CUSTOM UI & PINK THEME CSS ---
 st.markdown("""
     <style>
+    /* Import Saira font from Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700&display=swap');
+
+    /* Apply Saira font globally across the app */
+    .stApp, p, span, label, div, input, textarea {
+        font-family: 'Saira', sans-serif !important;
+    }
+
     /* Main background color */
     .stApp {
         background-color: #ffd1dc; /* Pastel pink */
@@ -37,7 +45,8 @@ st.markdown("""
     /* Headers and Titles */
     h1, h2, h3 {
         color: #f75775 !important;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-family: 'Saira', sans-serif;
+        font-weight: 700;
     }
     
     /* Custom Card Containers for Metrics or Filters */
@@ -46,7 +55,8 @@ st.markdown("""
         color: CC3551;
         border-radius: 8px;
         border: none;
-        font-weight: bold;
+        font-weight: 600;
+        font-family: 'Saira', sans-serif !important;
     }
     div.stButton > button:first-child:hover {
         background-color: #880e4f;
