@@ -106,7 +106,6 @@ def _result_row(filename: str, audit: dict) -> dict:
         "Auditor Notes": audit.get("auditor_notes") or "",
     }
 
-
 def _process_uploads(uploaded_files: list) -> list[dict]:
     rows: list[dict] = []
     progress = st.progress(0, text="Starting pipeline…")
@@ -124,7 +123,8 @@ def _process_uploads(uploaded_files: list) -> list[dict]:
             tmp_path = tmp.name
 
         try:
-            text = extract_text_from_pdf(tmp_path)
+            # open pdfs, extract raw text, convert to something the extraction model can analyze
+            text = extract_text_from_pdf(tmp_path) 
         except ValueError as exc:
             rows.append(
                 {
