@@ -20,6 +20,48 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# --- CUSTOM UI & PINK THEME CSS ---
+st.markdown("""
+    <style>
+    /* Main background color */
+    .stApp {
+        background-color: #ffd1dc; /* Pastel pink */
+    }
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background-color: #ffb7c5;
+        border-right: 1px solid #f8bbd0;
+    }
+    
+    /* Headers and Titles */
+    h1, h2, h3 {
+        color: #f75775 !important;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    
+    /* Custom Card Containers for Metrics or Filters */
+    div.stButton > button:first-child {
+        background-color: #ad1457;
+        color: CC3551;
+        border-radius: 8px;
+        border: none;
+        font-weight: bold;
+    }
+    div.stButton > button:first-child:hover {
+        background-color: #880e4f;
+        color: #CC3551;
+    }
+    
+    /* Dataframe styling container */
+    [data-testid="stDataFrame"] {
+        border-radius: 10px;
+        border: 1px solid #CC3551;
+        background-color: white;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.title("SiloSifter")
 st.caption(
     "Intelligent PDF demographic extractor & equity auditor for women's health literature "
