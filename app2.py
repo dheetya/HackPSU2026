@@ -178,11 +178,15 @@ else:
 
     # LEFT SECTION: Table
     with left_col:
-        st.subheader("Table")
+        st.subheader("Literature Screening Matrix")
 
         c1, c2 = st.columns([2, 1])
         with c1:
-            search = st.text_input("Search title / intervention / notes", "")
+            search = st.text_input(
+                "Search title / intervention / notes", 
+                value="",
+                placeholder="Search file"
+                )
         with c2:
             sex_filter = st.selectbox(
                 "Sex-disaggregated filter",
@@ -226,12 +230,12 @@ else:
         st.divider()
 
         # Bottom-right panel: Preview, CSV & Download button
-        st.subheader("Preview, CSV")
+        st.subheader("CSV File Preview")
         st.dataframe(filtered.head(5), use_container_width=True, hide_index=True)
 
         csv_bytes = filtered.to_csv(index=False).encode("utf-8")
         st.download_button(
-            "download.csv",
+            "Download CSV File",
             data=csv_bytes,
             file_name="silosifter_matrix.csv",
             mime="text/csv",
