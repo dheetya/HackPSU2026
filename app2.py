@@ -72,6 +72,53 @@ st.markdown(
         padding-left: 1.5rem;
     }
 
+    /* --- SIDEBAR HEADER AND TEXT COLORS --- */
+    /* Target Title (♀ RepresentHer) and Section Headers (Upload Papers) in sidebar */
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2 {
+        color: #f75775 !important;
+    }
+
+    /* Target caption text under Title and helper text under Upload Papers */
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"],
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p,
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] label,
+    [data-testid="stSidebar"] .stMarkdown p {
+        color: #f9859b !important;
+        opacity: .9 !important;
+    }
+
+    /* --- FILE UPLOADER & RUN BUTTON STYLING --- */
+    
+    /* 1. File Upload Button Border */
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] section button,
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] button {
+        border: 1.5px solid #f8bbd0 !important;
+        color: #e91e63 !important;
+        background-color: transparent !important;
+        border-radius: 8px !important;
+    }
+    /* 2. Disabled "Run Files" Button (When NO files uploaded) */
+    [data-testid="stSidebar"] button[disabled] {
+        border: 1.5px solid #f8bbd0 !important;
+        color: #f8bbd0 !important;
+        background-color: transparent !important;
+        opacity: .8 !important;
+        cursor: not-allowed !important;
+        border-radius: 8px !important;
+    }
+    /* 3. Active "Run Files" Primary Button (When files ARE uploaded -> Button screenshot style) */
+    [data-testid="stSidebar"] button[data-testid="baseButton-primary"]:not([disabled]),
+    [data-testid="stSidebar"] button[kind="primary"]:not([disabled]) {
+        background-color: #f75775 !important;
+        color: #FFFFFF !important;
+        border: 1.5px solid #f8bbd0 !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+    }
+
     /* Force HTML table text wrapping and column auto-resizing */
     [data-testid="stTable"] table {
         width: 100% !important;
@@ -181,7 +228,7 @@ if df.empty:
         </style>
         <div class="landing-container">
             <div class="landing-title">♀ RepresentHer</div>
-            <p style="color: #555;">Upload PDFs in the sidebar and click <b>Run Files</b> to start screening.</p>
+            <p style="color: #f9859b;">Upload PDFs in the sidebar and click <b>Run Files</b> to start screening.</p>
         </div>
         """,
         unsafe_allow_html=True,
