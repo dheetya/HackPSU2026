@@ -1,4 +1,4 @@
-"""SiloSifter demo dashboard with synthetic data and no LLM/API calls."""
+"""♀ RepresentHer demo dashboard with synthetic data and no LLM/API calls."""
 
 from __future__ import annotations
 
@@ -55,22 +55,45 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Inject custom CSS for column divider border and table cell text wrapping
+st.markdown(
+    """
+    <style>
+    /* Vertical divider between main left and right columns */
+    [data-testid="column"]:nth-child(1) {
+        border-right: 2px solid #f8bbd0;
+        padding-right: 1.5rem;
+    }
+    [data-testid="column"]:nth-child(2) {
+        padding-left: 1.5rem;
+    }
+
+    /* Force text wrapping inside Streamlit Dataframe cells */
+    [data-testid="stDataFrame"] div[role="gridcell"] {
+        white-space: normal !important;
+        word-break: break-word !important;
+        line-height: 1.4 !important;
+    }
+    </style>
+""",
+    unsafe_allow_html=True,
+)
+
 with st.sidebar:
     st.title("♀ RepresentHer")
     st.caption(
         "Intelligent PDF demographic extractor & equity auditor for women's health literature "
         "(contraception, reproductive health, clinical trials)."
     )
-    st.header("Upload papers")
+    st.header("Upload Papers")
     uploaded_files = st.file_uploader(
-        "Upload any PDF to enable the demo",
+        "Upload any PDF to enable the demo.",
         type=["pdf"],
         accept_multiple_files=True,
         help="The PDF is only used to enable the demo. Its contents are not read or sent anywhere.",
     )
-    st.info("No API key is needed. Uploaded PDF contents are not processed.")
     run_btn = st.button(
-        "Show synthetic demo results",
+        "Run Files",
         type="primary",
         disabled=not uploaded_files,
     )
