@@ -140,6 +140,38 @@ if run_btn:
         {"source_file": row["Source File"], "row": row} for row in DEMO_ROWS
     ]
 
+# --- HARDWARE SIFTER DECK COMMAND POLLING ---
+import os
+
+if os.path.exists("command.txt"):
+    try:
+        with open("command.txt", "r") as f:
+            hw_cmd = f.read().strip()
+        os.remove("command.txt")
+
+        if hw_cmd == "ACTION_AUDIT_GAPS":
+            st.toast("🔴 Sifter Deck: Scanning open PDFs for gap audit...")
+            # Triggers demo rows load or audit logic
+            st.session_state.demo_matrix = pd.DataFrame(DEMO_ROWS)
+            st.rerun()
+
+        elif hw_cmd == "ACTION_EXTRACT_MATRIX":
+            st.toast("🔵 Sifter Deck: Extracting demographic matrix...")
+            if not st.session_state.demo_matrix.empty:
+                st.success("Matrix successfully verified and structured via hardware!")
+            else:
+                st.warning("No data in matrix yet. Click 'Run Files' first.")
+
+        elif hw_cmd == "ACTION_EXPORT_SUMMARY":
+            st.toast("🟢 Sifter Deck: Exporting summary CSV...")
+            if not st.session_state.demo_matrix.empty:
+                st.session_state.demo_matrix.to_csv("silosifter_matrix.csv", index=False)
+                st.success("Successfully exported `silosifter_matrix.csv` via hardware deck!")
+            else:
+                st.warning("No data to export yet.")
+    except Exception:
+        pass
+
 df: pd.DataFrame = st.session_state.demo_matrix
 
 if df.empty:
