@@ -63,6 +63,7 @@ st.markdown(
     [data-testid="stHorizontalBlock"] {
         align-items: stretch !important;
     }
+
     /* Vertical divider between main left and right columns */
     [data-testid="column"]:nth-child(1) {
         border-right: 2px solid #f8bbd0;
@@ -84,6 +85,22 @@ st.markdown(
         overflow-wrap: break-word !important;
         vertical-align: top !important;
         padding: 8px 12px !important;
+    }
+
+    /* --- SCROLLABLE TABLE CONTAINER (Capped at ~4 rows) --- */
+    [data-testid="stTable"] {
+        max-height: 240px !important; /* Forces container to ~4 rows max height */
+        overflow-y: auto !important;  /* Enables vertical scrolling */
+        border: 1px solid #e6e8eb !important;
+        border-radius: 4px !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* Sticky headers for stTable during vertical scroll */
+    [data-testid="stTable"] table thead tr th {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 2 !important;
     }
 
     /* --- STYLE ROW 0 (Column Headers) --- */
@@ -231,13 +248,22 @@ else:
 
         # Bottom-right panel: Preview, CSV & Download button
         st.subheader("CSV File Preview")
-        st.dataframe(filtered.head(5), use_container_width=True, hide_index=True)
+
+        if not filtered.empty:
+            preview_subset = filtered.head(5)
+            preview_transposed = preview_subset.astype(str).T.reset_index()
+            preview_transposed.columns = ["Metric / Field"] + [
+                f"Paper {i+1}" for i in range(len(preview_subset))
+            ]
+
+            # Render directly; max-height and scrolling are enforced via CSS on stTable
+            st.table(preview_transposed)
 
         csv_bytes = filtered.to_csv(index=False).encode("utf-8")
         st.download_button(
             "Download CSV File",
             data=csv_bytes,
-            file_name="silosifter_matrix.csv",
+            file_name="representher_matrix.csv",
             mime="text/csv",
             use_container_width=True,
         )
