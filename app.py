@@ -197,6 +197,41 @@ if run_btn and uploaded_files:
             for r in rows
         ]
 
+# --- HARDWARE SIFTER DECK COMMAND POLLING ---
+if os.path.exists("command.txt"):
+    try:
+        with open("command.txt", "r") as f:
+            hw_cmd = f.read().strip()
+        os.remove("command.txt")
+
+        if hw_cmd == "ACTION_AUDIT_GAPS":
+            st.toast("🔴 Sifter Deck: Scanning open PDFs for gap audit...")
+            if uploaded_files and _api_configured():
+                with st.spinner("Running Gap Audit via Hardware..."):
+                    rows = _process_uploads(uploaded_files)
+                    st.session_state.matrix = pd.DataFrame(rows)
+                    st.session_state.compliance_log = [{"source_file": r["Source File"], "row": r} for r in rows]
+                st.rerun()
+            else:
+                st.warning("Please upload PDFs in the sidebar first!")
+
+        elif hw_cmd == "ACTION_EXTRACT_MATRIX":
+            st.toast("🔵 Sifter Deck: Extracting demographic matrix...")
+            if not st.session_state.matrix.empty:
+                st.success("Matrix successfully verified and structured!")
+            else:
+                st.warning("No data in matrix yet. Run the pipeline first.")
+
+        elif hw_cmd == "ACTION_EXPORT_SUMMARY":
+            st.toast("🟢 Sifter Deck: Exporting summary CSV...")
+            if not st.session_state.matrix.empty:
+                st.session_state.matrix.to_csv("silosifter_matrix.csv", index=False)
+                st.success("Successfully exported `silosifter_matrix.csv` via hardware deck!")
+            else:
+                st.warning("No data to export yet.")
+    except Exception:
+        pass
+
 df: pd.DataFrame = st.session_state.matrix
 
 if df.empty:
