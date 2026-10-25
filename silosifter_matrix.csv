@@ -1,0 +1,4 @@
+Source File,Paper Title,Intervention,Total N,Female N,Female Cohort %,Sex-Disaggregated?,Equity Score,Verification,Auditor Notes
+Demo sample 1,DEMO: Phase II contraceptive trial,Synthetic oral contraceptive,240,240,100.0,Yes,Not calculated,Not run,Synthetic demo output; not derived from an uploaded PDF.
+Demo sample 2,DEMO: Maternal health observational study,Synthetic prenatal care program,1250,730,58.4,No,Not calculated,Not run,Synthetic demo output; sex-disaggregated results are not shown.
+Demo sample 3,DEMO: Menstrual health survey,Synthetic digital health survey,480,312,65.0,Yes,Not calculated,Not run,Synthetic demo output; not derived from an uploaded PDF.

@@ -140,40 +140,43 @@ if run_btn:
         {"source_file": row["Source File"], "row": row} for row in DEMO_ROWS
     ]
 
-# --- REWORKED SIFTER DECK CONTROLS ---
-import os
+# --- AUTO-POLLING SIFTER DECK FRAGMENT ---
+@st.fragment(run_every=1)
+def poll_hardware():
+    import os
+    if os.path.exists("command.txt"):
+        try:
+            with open("command.txt", "r") as f:
+                hw_cmd = f.read().strip()
+            os.remove("command.txt")
 
-if os.path.exists("command.txt"):
-    try:
-        with open("command.txt", "r") as f:
-            hw_cmd = f.read().strip()
-        os.remove("command.txt")
+            if st.session_state.demo_matrix.empty:
+                st.session_state.demo_matrix = pd.DataFrame(DEMO_ROWS)
 
-        if st.session_state.demo_matrix.empty:
-            st.session_state.demo_matrix = pd.DataFrame(DEMO_ROWS)
+            if hw_cmd == "ACTION_AUDIT_GAPS":
+                st.toast("🔴 Sifter Deck: Red Alert — Isolating high-risk compliance gaps!")
+                filtered_gap = st.session_state.demo_matrix[
+                    st.session_state.demo_matrix["Sex-Disaggregated?"] == "No"
+                ]
+                if not filtered_gap.empty:
+                    st.session_state.demo_matrix = filtered_gap
+                st.rerun()
 
-        if hw_cmd == "ACTION_AUDIT_GAPS":
-            st.toast("🔴 Sifter Deck: Red Alert — Isolating high-risk compliance gaps!")
-            # Filter for rows where Sex-Disaggregated is 'No'
-            filtered_gap = st.session_state.demo_matrix[
-                st.session_state.demo_matrix["Sex-Disaggregated?"] == "No"
-            ]
-            if not filtered_gap.empty:
-                st.session_state.demo_matrix = filtered_gap
-            st.rerun()
+            elif hw_cmd == "ACTION_EXTRACT_MATRIX":
+                st.toast("🔵 Sifter Deck: Resetting matrix view...")
+                st.session_state.demo_matrix = pd.DataFrame(DEMO_ROWS)
+                st.rerun()
 
-        elif hw_cmd == "ACTION_EXTRACT_MATRIX":
-            st.toast("🔵 Sifter Deck: Resetting matrix view...")
-            st.session_state.demo_matrix = pd.DataFrame(DEMO_ROWS)
-            st.rerun()
+            elif hw_cmd == "ACTION_EXPORT_SUMMARY":
+                st.toast("🟢 Sifter Deck: Compliance Verified! Exporting CSV...")
+                st.session_state.demo_matrix.to_csv("silosifter_matrix.csv", index=False)
+                st.success("Successfully exported `silosifter_matrix.csv` via hardware deck!")
+                st.rerun()
+        except Exception:
+            pass
 
-        elif hw_cmd == "ACTION_EXPORT_SUMMARY":
-            st.toast("🟢 Sifter Deck: Compliance Verified! Exporting CSV...")
-            st.session_state.demo_matrix.to_csv("silosifter_matrix.csv", index=False)
-            st.success("Successfully exported `silosifter_matrix.csv` via hardware deck!")
-            st.rerun()
-    except Exception:
-        pass
+# Call the polling function so it runs continuously in the background
+poll_hardware()
 
 df: pd.DataFrame = st.session_state.demo_matrix
 
