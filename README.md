@@ -1,8 +1,8 @@
-# HackPSU2026 — SiloSifter
+# HackPSU2026 — ♀ RepresentHer
 
 Team: Aarti Vishwakarma, Hannah Kifer, Kelly Trice, Dheetya Karra
 
-SiloSifter is an MVP pipeline that ingests women's health research PDFs, extracts structured demographic and safety reporting fields with an LLM, verifies claims with an auditor agent, and scores each paper for demographic equity.
+♀ RepresentHer is an MVP pipeline that ingests women's health research PDFs, extracts structured demographic and safety reporting fields with an LLM, verifies claims with an auditor agent, and scores each paper for demographic equity.
 
 ## Requirements
 
