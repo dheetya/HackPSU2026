@@ -56,10 +56,13 @@ st.set_page_config(
 )
 
 # Inject custom CSS for column divider border and table cell text wrapping
-
 st.markdown(
     """
     <style>
+    /* Ensure parent layout containers allow full width without hidden overflow */
+    [data-testid="stHorizontalBlock"] {
+        align-items: stretch !important;
+    }
     /* Vertical divider between main left and right columns */
     [data-testid="column"]:nth-child(1) {
         border-right: 2px solid #f8bbd0;
@@ -69,11 +72,38 @@ st.markdown(
         padding-left: 1.5rem;
     }
 
-    /* Force text wrapping inside Streamlit Dataframe cells */
-    [data-testid="stDataFrame"] div[role="gridcell"] {
+    /* Force HTML table text wrapping and column auto-resizing */
+    [data-testid="stTable"] table {
+        width: 100% !important;
+        table-layout: auto !important;
+    }
+    [data-testid="stTable"] td, 
+    [data-testid="stTable"] th {
         white-space: normal !important;
         word-break: break-word !important;
-        line-height: 1.4 !important;
+        overflow-wrap: break-word !important;
+        vertical-align: top !important;
+        padding: 8px 12px !important;
+    }
+
+    /* --- STYLE ROW 0 (Column Headers) --- */
+    [data-testid="stTable"] thead tr th {
+        background-color: #f0f2f6 !important;
+        font-weight: normal !important;
+        color: #31333f !important;
+    }
+
+    /* --- STYLE COLUMN 0 (Metric / Field Headers) --- */
+    [data-testid="stTable"] tbody tr td:first-child {
+        font-weight: normal !important;
+        background-color: #f0f2f6 !important;
+        color: #31333f !important;
+    }
+
+    /* Top-left corner cell styling (Metric / Field) */
+    [data-testid="stTable"] thead tr th:first-child {
+        background-color: #f0f2f6 !important;
+        color: #31333f !important;
     }
     </style>
 """,
@@ -137,7 +167,7 @@ if df.empty:
         </style>
         <div class="landing-container">
             <div class="landing-title">♀ RepresentHer</div>
-            <p style="color: #555;">Upload PDFs in the sidebar and click <b>Run RepresentHer pipeline</b> to start screening.</p>
+            <p style="color: #555;">Upload PDFs in the sidebar and click <b>Run Files</b> to start screening.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -175,16 +205,13 @@ else:
         elif sex_filter == "No only":
             filtered = filtered[filtered["Sex-Disaggregated?"] == "No"]
 
-        # Transpose the dataframe and set original column headers as the Index (Column 0)
-        transposed_df = filtered.astype(str).T
-        transposed_df.columns = [f"Paper {i+1}" for i in range(len(filtered))]
-        transposed_df.index.name = "Metric / Field"
+        # Transpose so original column labels become Column 0 data
+        transposed_df = filtered.astype(str).T.reset_index()
+        transposed_df.columns = ["Metric / Field"] + [f"Paper {i+1}" for i in range(len(filtered))]
 
-        st.dataframe(
-            transposed_df,
-            use_container_width=True,
-            hide_index=False,  # Display index so Column 0 receives header formatting
-        )
+        # Render as st.table to allow true multi-line CSS text wrapping without scrollbars
+        st.table(transposed_df)
+
         st.caption(f"Showing {len(filtered)} of {len(df)} synthetic demo samples.")
 
     # RIGHT SECTION: Metrics & Download Preview
