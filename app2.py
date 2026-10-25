@@ -59,6 +59,9 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+    /* ==========================================================================
+       LIGHT MODE DEFAULTS (Applies everywhere as default base styles)
+       ========================================================================== */
     /* Ensure parent layout containers allow full width without hidden overflow */
     [data-testid="stHorizontalBlock"] {
         align-items: stretch !important;
@@ -72,6 +75,94 @@ st.markdown(
         padding-left: 1.5rem;
     }
 
+    /* ==========================================================================
+       LIGHT MODE DEFAULTS (Applies everywhere as default base styles)
+       ========================================================================== */    /* --- Main Canvas & Sidebar --- */
+    .stApp {
+        background-color: #ffffff !important;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #f8f9fa !important;
+    }
+
+    /* --- SIDEBAR HEADER AND TEXT COLORS --- */
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2 {
+        color: #f75775 !important;
+    }
+
+    /* Target caption text under Title and helper text under Upload Papers */
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"],
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p,
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] label,
+    [data-testid="stSidebar"] .stMarkdown p {
+        color: #f9859b !important;
+        opacity: .9 !important;
+    }
+
+    /* 1. File Upload Button Border */
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] section button,
+    [data-testid="stSidebar"] [data-testid="stFileUploader"] button {
+        border: 1.5px solid #f8bbd0 !important;
+        color: #e91e63 !important;
+        background-color: transparent !important;
+        border-radius: 8px !important;
+    }
+    /* 2. Disabled "Run Files" Button (When NO files uploaded) */
+    [data-testid="stSidebar"] button[disabled] {
+        border: 1.5px solid #f8bbd0 !important;
+        color: #f8bbd0 !important;
+        background-color: transparent !important;
+        opacity: .8 !important;
+        cursor: not-allowed !important;
+        border-radius: 8px !important;
+    }
+    /* 3. Active "Run Files" Primary Button (When files ARE uploaded -> Button screenshot style) */
+    [data-testid="stSidebar"] button[data-testid="baseButton-primary"]:not([disabled]),
+    [data-testid="stSidebar"] button[kind="primary"]:not([disabled]) {
+        background-color: #f75775 !important;
+        color: #FFFFFF !important;
+        border: 1.5px solid #f8bbd0 !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+    }
+
+    /* Section subheaders slight pink tint or clean dark headers */
+    [data-testid="stColumn"] h3 {
+        color: #31333f !important;
+        border-bottom: 2px solid #fce4ec;
+        padding-bottom: 4px;
+        display: inline-block;
+    }
+
+    /* --- SUBHEADER COLOR (#f75775) --- */
+    [data-testid="column"] h3,
+    [data-testid="stHeading"] h3,
+    .stMarkdown h3 {
+        color: #f75775 !important;
+        opacity: .9 !important;
+    }
+
+    /* Download CSV Button - Matching Focus outline style */
+    [data-testid="stColumn"]:nth-child(2) [data-testid="stDownloadButton"] button {
+        border: 1.5px solid #f8bbd0 !important;
+        color: #e91e63 !important;
+        background-color: transparent !important;
+        font-weight: 500 !important;
+        border-radius: 8px !important;
+        transition: all 0.2s ease;
+    }
+
+    [data-testid="stColumn"]:nth-child(2) [data-testid="stDownloadButton"] button:hover {
+        background-color: #f8bbd0 !important;
+        color: #1f2937 !important;
+    }
+
+    /* ==========================================================================
+       TABLES & DATAFRAMES STYLING
+       ========================================================================== */
     /* Force HTML table text wrapping and column auto-resizing */
     [data-testid="stTable"] table {
         width: 100% !important;
@@ -102,6 +193,20 @@ st.markdown(
 
     /* Top-left corner cell styling (Metric / Field) */
     [data-testid="stTable"] thead tr th:first-child {
+        background-color: #f0f2f6 !important;
+        color: #31333f !important;
+    }
+
+    /* --- STYLE ST.DATAFRAME HEADERS AND PINNED COLUMN 0 --- */
+    [data-testid="stDataFrame"] [role="columnheader"],
+    [data-testid="stDataFrame"] th {
+        background-color: #f0f2f6 !important;
+        color: #31333f !important;
+        font-weight: normal !important;
+    }
+
+    /* Target pinned column header background */
+    [data-testid="stDataFrame"] [data-aria-colindex="1"] {
         background-color: #f0f2f6 !important;
         color: #31333f !important;
     }
@@ -205,7 +310,7 @@ if df.empty:
         </style>
         <div class="landing-container">
             <div class="landing-title">♀ RepresentHer</div>
-            <p style="color: #555;">Upload PDFs in the sidebar and click <b>Run Files</b> to start screening.</p>
+            <p style="color: #f9859b;">Upload PDFs in the sidebar and click <b>Run Files</b> to start screening.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -296,12 +401,26 @@ else:
             preview_transposed.columns = ["Metric / Field"] + [
                 f"Paper {i+1}" for i in range(len(preview_subset))
             ]
+
+            # Apply #f0f2f6 background color and #31333f text color to Column 0
+            styled_preview = preview_transposed.style.map(
+                lambda val: "background-color: #f0f2f6; color: #31333f; font-weight: normal !important;",
+                subset=["Metric / Field"],
+            )
+
             st.dataframe(
-                preview_transposed,
+                styled_preview,
                 use_container_width=True,
                 hide_index=True,
-                height=180,
+                height=180,  # Caps visible area at ~4 rows before vertical scroll
+                column_config={
+                    "Metric / Field": st.column_config.Column(
+                        "Metric / Field",
+                        pinned=True,  # Pins/freezes Column 0 to the left during horizontal scroll
+                    )
+                },
             )
+
         csv_bytes = filtered.to_csv(index=False).encode("utf-8")
         st.download_button(
             "Download CSV File",
