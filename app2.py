@@ -464,15 +464,15 @@ else:
             if not scores.empty:
                 avg_score = scores.mean()
 
-                    st.metric("Average Score", f"{avg_score:.1f}/100")
-                    st.progress(
-                        max(0.0, min(float(avg_score) / 100, 1.0))
-                    )
-                    st.caption(f"Across {len(scores)} scored studies")
-                else:
-                    st.info("No calculated scores available.")
+                st.metric("Average Score", f"{avg_score:.1f}/100")
+                st.progress(
+                    max(0.0, min(float(avg_score) / 100, 1.0))
+                )
+                st.caption(f"Across {len(scores)} scored studies")
             else:
-                st.info("No scored studies in this view.")
+                st.info("No calculated scores available.")
+        else:
+            st.info("No scored studies in this view.")
 
             st.markdown(
                 "We score how thoroughly studies report demographic and "
