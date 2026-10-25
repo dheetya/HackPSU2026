@@ -1,14 +1,14 @@
 import serial
 import time
 
-ARDUINO_PORT = "COM3"  # Update if yours is different
+ARDUINO_PORT = "COM3"
 BAUD_RATE = 9600
 
 print(f"Attempting to connect to Arduino on {ARDUINO_PORT}...")
 
 try:
     ser = serial.Serial(ARDUINO_PORT, BAUD_RATE, timeout=1)
-    time.sleep(2)  # Give the connection a second to settle
+    time.sleep(2)
     print("Successfully connected! Listening for button presses...")
 except Exception as e:
     print(f"CONNECTION ERROR: {e}")
