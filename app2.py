@@ -129,6 +129,15 @@ st.markdown(
         box-shadow: none !important;
     }
 
+    /* --- WIDGET LABEL COLOR MATCHING CAPTION (#f9859b) --- */
+    [data-testid="stTextInput"] [data-testid="stWidgetLabel"] p,
+    [data-testid="stSelectbox"] [data-testid="stWidgetLabel"] p,
+    [data-testid="stWidgetLabel"] label,
+    [data-testid="stWidgetLabel"] p {
+        color: #808495 !important;
+        opacity: 1 !important;
+    }
+
     /* Section subheaders slight pink tint or clean dark headers */
     [data-testid="stColumn"] h3 {
         color: #31333f !important;
@@ -181,20 +190,20 @@ st.markdown(
     [data-testid="stTable"] thead tr th {
         background-color: #f0f2f6 !important;
         font-weight: normal !important;
-        color: #31333f !important;
+        color: #808495 !important;
     }
 
     /* --- STYLE COLUMN 0 (Metric / Field Headers) --- */
     [data-testid="stTable"] tbody tr td:first-child {
         font-weight: normal !important;
         background-color: #f0f2f6 !important;
-        color: #31333f !important;
+        color: #808495 !important;
     }
 
     /* Top-left corner cell styling (Metric / Field) */
     [data-testid="stTable"] thead tr th:first-child {
         background-color: #f0f2f6 !important;
-        color: #31333f !important;
+        color: #808495 !important;
     }
 
     /* --- STYLE ST.DATAFRAME HEADERS AND PINNED COLUMN 0 --- */
@@ -365,6 +374,10 @@ else:
     with right_col:
         st.subheader("Equity Metrics")
         st.caption("How we score equity reporting")
+        st.markdown(
+            "We score studies on how thoroughly they report demographic and safety information relevant to women's health." \
+            " Each category receives a certain weight such that higher scores indicate more complete reporting based on our criteria."
+        )
 
         # Average score for filtered studies
         if not filtered.empty and "Equity Score" in filtered.columns:
@@ -385,11 +398,6 @@ else:
                 st.info("No calculated scores available.")
         else:
             st.info("No scored studies in this view.")
-
-        st.markdown(
-            "We score how thoroughly studies report demographic and "
-            "safety information relevant to women's health."
-        )
         
         st.divider()
         
