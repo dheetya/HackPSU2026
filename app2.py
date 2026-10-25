@@ -105,6 +105,20 @@ st.markdown(
         background-color: #f0f2f6 !important;
         color: #31333f !important;
     }
+
+    /* --- STYLE ST.DATAFRAME HEADERS AND PINNED COLUMN 0 --- */
+    [data-testid="stDataFrame"] [role="columnheader"],
+    [data-testid="stDataFrame"] th {
+        background-color: #f0f2f6 !important;
+        color: #31333f !important;
+        font-weight: normal !important;
+    }
+
+    /* Target pinned column header background */
+    [data-testid="stDataFrame"] [data-aria-colindex="1"] {
+        background-color: #f0f2f6 !important;
+        color: #31333f !important;
+    }
     </style>
 """,
     unsafe_allow_html=True,
@@ -238,12 +252,26 @@ else:
             preview_transposed.columns = ["Metric / Field"] + [
                 f"Paper {i+1}" for i in range(len(preview_subset))
             ]
+
+            # Apply #f0f2f6 background color and #31333f text color to Column 0
+            styled_preview = preview_transposed.style.map(
+                lambda val: "background-color: #f0f2f6; color: #31333f; font-weight: normal !important;",
+                subset=["Metric / Field"],
+            )
+
             st.dataframe(
-                preview_transposed,
+                styled_preview,
                 use_container_width=True,
                 hide_index=True,
-                height=180,
+                height=180,  # Caps visible area at ~4 rows before vertical scroll
+                column_config={
+                    "Metric / Field": st.column_config.Column(
+                        "Metric / Field",
+                        pinned=True,  # Pins/freezes Column 0 to the left during horizontal scroll
+                    )
+                },
             )
+
         csv_bytes = filtered.to_csv(index=False).encode("utf-8")
         st.download_button(
             "Download CSV File",
