@@ -62,7 +62,12 @@ st.caption(
 )
 
 with st.sidebar:
-    st.header("Demo")
+    st.title("RepresentHer demo")
+    st.caption(
+        "Intelligent PDF demographic extractor & equity auditor for women's health literature "
+        "(contraception, reproductive health, clinical trials)."
+    )
+    st.header("Upload papers")
     uploaded_files = st.file_uploader(
         "Upload any PDF to enable the demo",
         type=["pdf"],
@@ -90,47 +95,53 @@ if run_btn:
 df: pd.DataFrame = st.session_state.demo_matrix
 
 if df.empty:
-    st.info("Upload any PDF in the sidebar and click **Show synthetic demo results**.")
+    st.info("Upload PDFs in the sidebar and click **Show demo results**.")
 else:
     st.warning(
         "Demo data only: these example records are fictional and are not based on "
         "the uploaded PDF. Equity scoring and auditor verification are not run."
     )
-    st.subheader("Literature screening matrix")
 
-    c1, c2 = st.columns([2, 1])
-    with c1:
-        search = st.text_input("Search title / intervention / notes", "")
-    with c2:
-        sex_filter = st.selectbox(
-            "Sex-disaggregated filter",
-            ["All", "Yes only", "No only"],
+    # 2-col layout: left (table) & right (equity metrics + CSV preview)
+    left_col, right_col = st.columns([3, 2])
+
+    # LEFT SECTION: Table
+    with left_col:
+        st.subheader("Table")
+
+        c1, c2 = st.columns([2, 1])
+        with c1:
+            search = st.text_input("Search title / intervention / notes", "")
+        with c2:
+            sex_filter = st.selectbox(
+                "Sex-disaggregated filter",
+                ["All", "Yes only", "No only"],
+            )
+
+        filtered = df.copy()
+        if search.strip():
+            mask = filtered.apply(
+                lambda row: search.lower()
+                in " ".join(
+                    str(row.get(column, ""))
+                    for column in ("Paper Title", "Intervention", "Auditor Notes")
+                ).lower(),
+                axis=1,
+            )
+            filtered = filtered[mask]
+        if sex_filter == "Yes only":
+            filtered = filtered[filtered["Sex-Disaggregated?"] == "Yes"]
+        elif sex_filter == "No only":
+            filtered = filtered[filtered["Sex-Disaggregated?"] == "No"]
+
+        st.dataframe(
+            filtered,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Female Cohort %": st.column_config.NumberColumn(format="%.1f"),
+            },
         )
-
-    filtered = df.copy()
-    if search.strip():
-        mask = filtered.apply(
-            lambda row: search.lower()
-            in " ".join(
-                str(row.get(column, ""))
-                for column in ("Paper Title", "Intervention", "Auditor Notes")
-            ).lower(),
-            axis=1,
-        )
-        filtered = filtered[mask]
-    if sex_filter == "Yes only":
-        filtered = filtered[filtered["Sex-Disaggregated?"] == "Yes"]
-    elif sex_filter == "No only":
-        filtered = filtered[filtered["Sex-Disaggregated?"] == "No"]
-
-    st.dataframe(
-        filtered,
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            "Female Cohort %": st.column_config.NumberColumn(format="%.1f"),
-        },
-    )
 
     st.caption(f"Showing {len(filtered)} of {len(df)} synthetic demo samples.")
 
