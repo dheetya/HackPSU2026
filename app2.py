@@ -137,6 +137,14 @@ st.markdown(
         display: inline-block;
     }
 
+    /* --- SUBHEADER COLOR (#f75775) --- */
+    [data-testid="column"] h3,
+    [data-testid="stHeading"] h3,
+    .stMarkdown h3 {
+        color: #f75775 !important;
+        opacity: .9 !important;
+    }
+
     /* Download CSV Button - Matching Focus outline style */
     [data-testid="stColumn"]:nth-child(2) [data-testid="stDownloadButton"] button {
         border: 1.5px solid #f8bbd0 !important;
