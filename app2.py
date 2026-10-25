@@ -55,14 +55,8 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.title("SiloSifter — Demo mode")
-st.caption(
-    "Explore the dashboard with synthetic sample data. This demo makes no API calls "
-    "and does not extract, audit, or score uploaded PDFs."
-)
-
 with st.sidebar:
-    st.title("RepresentHer demo")
+    st.title("♀ RepresentHer")
     st.caption(
         "Intelligent PDF demographic extractor & equity auditor for women's health literature "
         "(contraception, reproductive health, clinical trials)."
@@ -95,13 +89,36 @@ if run_btn:
 df: pd.DataFrame = st.session_state.demo_matrix
 
 if df.empty:
-    st.info("Upload PDFs in the sidebar and click **Show demo results**.")
-else:
-    st.warning(
-        "Demo data only: these example records are fictional and are not based on "
-        "the uploaded PDF. Equity scoring and auditor verification are not run."
+# Default landing screen matching the bottom sketch (Logo + Title)
+    # Centered landing screen with non-wrapping title using flexbox and viewport units (vw)
+    st.markdown(
+        """
+        <style>
+        .landing-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 70vh;
+            width: 100%;
+            text-align: center;
+        }
+        .landing-title {
+            white-space: nowrap;
+            font-size: clamp(2rem, 6vw, 4.5rem);
+            font-weight: bold;
+            color: #f75775;
+            margin-bottom: 0.5rem;
+        }
+        </style>
+        <div class="landing-container">
+            <div class="landing-title">♀ RepresentHer</div>
+            <p style="color: #555;">Upload PDFs in the sidebar and click <b>Run RepresentHer pipeline</b> to start screening.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
-
+else:
     # 2-col layout: left (table) & right (equity metrics + CSV preview)
     left_col, right_col = st.columns([3, 2])
 
@@ -142,22 +159,28 @@ else:
                 "Female Cohort %": st.column_config.NumberColumn(format="%.1f"),
             },
         )
+        st.caption(f"Showing {len(filtered)} of {len(df)} synthetic demo samples.")
 
-    st.caption(f"Showing {len(filtered)} of {len(df)} synthetic demo samples.")
+    # RIGHT SECTION: Metrics & Download Preview
+    with right_col:
+        # Top-right panel: Equity Metrics
+        st.subheader("Equity Metrics")
+        st.caption("// how we are scoring equity")
+        """if not filtered.empty and "Equity Score" in filtered.columns:
+            avg_score = filtered["Equity Score"].mean()
+            st.metric("Average Equity Score", f"{avg_score:.1f}")
+        """
+        st.divider()
 
-    col_a, col_b = st.columns(2)
-    with col_a:
+        # Bottom-right panel: Preview, CSV & Download button
+        st.subheader("Preview, CSV")
+        st.dataframe(filtered.head(5), use_container_width=True, hide_index=True)
+
+        csv_bytes = filtered.to_csv(index=False).encode("utf-8")
         st.download_button(
-            "Download matrix (CSV)",
-            data=filtered.to_csv(index=False).encode("utf-8"),
-            file_name="silosifter_demo_matrix.csv",
+            "download.csv",
+            data=csv_bytes,
+            file_name="silosifter_matrix.csv",
             mime="text/csv",
-        )
-    with col_b:
-        log_payload = json.dumps(st.session_state.demo_compliance_log, indent=2)
-        st.download_button(
-            "Download demo log (JSON)",
-            data=log_payload.encode("utf-8"),
-            file_name="silosifter_demo_log.json",
-            mime="application/json",
+            use_container_width=True,
         )
