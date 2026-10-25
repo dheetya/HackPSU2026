@@ -365,7 +365,82 @@ else:
         with right_col:
             st.subheader("Equity Metrics")
             st.caption("How we score equity reporting")
+            # Visualize the 100-point equity scoring rubric
+            rubric = [
+                ("Sample size", 5, "#64748b"),
+                ("Female participant count", 15, "#ec4899"),
+                ("Sex-disaggregated reporting", 25, "#be185d"),
+                ("Age subgroups", 10, "#8b5cf6"),
+                ("Menstrual-cycle characteristics", 10, "#0d9488"),
+                ("Hormonal formulation", 10, "#2563eb"),
+                ("Adverse events", 15, "#f59e0b"),
+                ("Demographic limitations", 10, "#65a30d"),
+            ]
 
+            # Proportional, segmented bar
+            segments = "".join(
+                f'<div title="{name}: {weight} points" '
+                f'style="width:{weight}%;background:{color};'
+                f'height:14px;" ></div>'
+                for name, weight, color in rubric
+            )
+
+            st.markdown(
+                f"""
+                <div style="
+                    display:flex;
+                    width:100%;
+                    overflow:hidden;
+                    border-radius:6px;
+                    margin:8px 0 14px 0;
+                ">
+                    {segments}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            # Compact two-column legend
+            legend_items = "".join(
+                f"""
+                <div style="
+                    display:flex;
+                    align-items:flex-start;
+                    gap:7px;
+                    margin-bottom:10px;
+                    font-size:12px;
+                ">
+                    <span style="
+                        min-width:10px;
+                        height:10px;
+                        margin-top:3px;
+                        border-radius:3px;
+                        background:{color};
+                    "></span>
+                    <div>
+                        <div>{name}</div>
+                        <div style="opacity:0.65;margin-top:2px;">
+                            {weight} points ({weight}%)
+                        </div>
+                    </div>
+                </div>
+                """
+                for name, weight, color in rubric
+            )
+
+            st.markdown(
+                f"""
+                <div style="
+                    display:grid;
+                    grid-template-columns:1fr 1fr;
+                    column-gap:12px;
+                    margin-bottom:12px;
+                ">
+                    {legend_items}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
             # Average score for filtered studies
             if not filtered.empty and "Equity Score" in filtered.columns:
                 scores = pd.to_numeric(
@@ -392,7 +467,7 @@ else:
             )
             
             st.divider()
-            
+
         # Bottom-right panel: Preview, CSV & Download button
         st.subheader("CSV File Preview")
         if not filtered.empty:
