@@ -386,12 +386,13 @@ else:
             else:
                 st.info("No scored studies in this view.")
 
-            st.divider()
-
             st.markdown(
                 "We score how thoroughly studies report demographic and "
                 "safety information relevant to women's health."
             )
+            
+            st.divider()
+            
         # Bottom-right panel: Preview, CSV & Download button
         st.subheader("CSV File Preview")
         if not filtered.empty:
