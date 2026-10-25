@@ -56,6 +56,7 @@ st.set_page_config(
 )
 
 # Inject custom CSS for column divider border and table cell text wrapping
+
 st.markdown(
     """
     <style>
@@ -174,13 +175,15 @@ else:
         elif sex_filter == "No only":
             filtered = filtered[filtered["Sex-Disaggregated?"] == "No"]
 
+        # Transpose the dataframe and set original column headers as the Index (Column 0)
+        transposed_df = filtered.astype(str).T
+        transposed_df.columns = [f"Paper {i+1}" for i in range(len(filtered))]
+        transposed_df.index.name = "Metric / Field"
+
         st.dataframe(
-            filtered,
+            transposed_df,
             use_container_width=True,
-            hide_index=True,
-            column_config={
-                "Female Cohort %": st.column_config.NumberColumn(format="%.1f"),
-            },
+            hide_index=False,  # Display index so Column 0 receives header formatting
         )
         st.caption(f"Showing {len(filtered)} of {len(df)} synthetic demo samples.")
 
