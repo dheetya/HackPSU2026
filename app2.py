@@ -59,6 +59,9 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+    /* ==========================================================================
+       LIGHT MODE DEFAULTS (Applies everywhere as default base styles)
+       ========================================================================== */
     /* Ensure parent layout containers allow full width without hidden overflow */
     [data-testid="stHorizontalBlock"] {
         align-items: stretch !important;
@@ -72,8 +75,17 @@ st.markdown(
         padding-left: 1.5rem;
     }
 
+    /* ==========================================================================
+       LIGHT MODE DEFAULTS (Applies everywhere as default base styles)
+       ========================================================================== */    /* --- Main Canvas & Sidebar --- */
+    .stApp {
+        background-color: #ffffff !important;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #f8f9fa !important;
+    }
+
     /* --- SIDEBAR HEADER AND TEXT COLORS --- */
-    /* Target Title (♀ RepresentHer) and Section Headers (Upload Papers) in sidebar */
     [data-testid="stSidebar"] h1, 
     [data-testid="stSidebar"] h2 {
         color: #f75775 !important;
@@ -89,8 +101,6 @@ st.markdown(
         opacity: .9 !important;
     }
 
-    /* --- FILE UPLOADER & RUN BUTTON STYLING --- */
-    
     /* 1. File Upload Button Border */
     [data-testid="stSidebar"] [data-testid="stFileUploader"] section button,
     [data-testid="stSidebar"] [data-testid="stFileUploader"] button {
@@ -119,6 +129,32 @@ st.markdown(
         box-shadow: none !important;
     }
 
+    /* Section subheaders slight pink tint or clean dark headers */
+    [data-testid="stColumn"] h3 {
+        color: #31333f !important;
+        border-bottom: 2px solid #fce4ec;
+        padding-bottom: 4px;
+        display: inline-block;
+    }
+
+    /* Download CSV Button - Matching Focus outline style */
+    [data-testid="stColumn"]:nth-child(2) [data-testid="stDownloadButton"] button {
+        border: 1.5px solid #f8bbd0 !important;
+        color: #e91e63 !important;
+        background-color: transparent !important;
+        font-weight: 500 !important;
+        border-radius: 8px !important;
+        transition: all 0.2s ease;
+    }
+
+    [data-testid="stColumn"]:nth-child(2) [data-testid="stDownloadButton"] button:hover {
+        background-color: #f8bbd0 !important;
+        color: #1f2937 !important;
+    }
+
+    /* ==========================================================================
+       TABLES & DATAFRAMES STYLING
+       ========================================================================== */
     /* Force HTML table text wrapping and column auto-resizing */
     [data-testid="stTable"] table {
         width: 100% !important;
