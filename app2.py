@@ -227,8 +227,8 @@ st.markdown(
 with st.sidebar:
     st.title("♀ RepresentHer")
     st.caption(
-        "Intelligent PDF demographic extractor & equity auditor for women's health literature "
-        "(contraception, reproductive health, clinical trials)."
+        "Intelligent tool that ingests clinical trial PDFs "
+        " and scores each paper for gender demographic equity."
     )
     st.header("Upload Papers")
     uploaded_files = st.file_uploader(
